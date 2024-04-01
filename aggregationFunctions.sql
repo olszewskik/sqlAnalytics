@@ -27,7 +27,7 @@ order by product_type;
 
 select to_char(date_added, 'YYYY'),
        count(*)
-FROM customers
+from customers
 group by to_char(date_added, 'YYYY')
 order by 1;
 
@@ -113,3 +113,20 @@ select channel,
        avg(sales_amount) as avg_sales_amount
 from sales
 group by grouping sets ((channel), (product_id), (channel, product_id));
+
+select ((count(*) - count(dealership_id))::numeric * 100) / count(*) as percent_sales
+from sales;
+
+select to_char(sales_transaction_date, 'yyyy'),
+       sum(sales_amount)
+from sales
+where channel = 'internet'
+group by 1
+order by 1;
+
+select to_char(sales_transaction_date, 'yyyy'),
+       sum(case when channel = 'internet' then sales_amount else 0 end)  as internet_sales,
+       sum(case when channel <> 'internet' then sales_amount else 0 end) as non_internet_sales
+from sales
+group by 1
+order by 1;
